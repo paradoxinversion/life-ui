@@ -27,16 +27,11 @@ class TodoEntry extends Component {
   renderTodo() {
     return (
       <Fragment>
-        <p className="inline">{this.props.todo.itemData.text}</p>
-        <button
-          onClick={() => {
-            this.setState({
-              editable: true
-            });
-          }}
-        >
-          Edit
-        </button>
+        {this.props.todo.itemData.isDone ? (
+          <s className="inline">{this.props.todo.itemData.text}</s>
+        ) : (
+          <p className="inline">{this.props.todo.itemData.text}</p>
+        )}
       </Fragment>
     );
   }
@@ -46,13 +41,8 @@ class TodoEntry extends Component {
     return (
       <Fragment>
         <button
+          className="border"
           onClick={() => {
-            console.log({
-              ...this.props.todo.itemData,
-              text: this.state.text,
-              isDone: this.state.isDone
-            });
-            console.log();
             AppContainer.editListItem("todo", this.props.todo.id, {
               ...this.props.todo.itemData,
               text: this.state.text,
@@ -66,7 +56,7 @@ class TodoEntry extends Component {
           Save
         </button>
         <input
-          className="inline"
+          className="inline border"
           type="text"
           name="text"
           onChange={this.handleChange}
@@ -78,27 +68,95 @@ class TodoEntry extends Component {
   render() {
     const [AppContainer] = this.props.containers;
     return (
-      <div id={`todo-entry-${this.props.todo.id}`}>
+      <div id={`todo-entry-${this.props.todo.id}`} className="flex">
         <input
           onChange={e => {
-            console.log(e.target.checked);
             this.setIsDone(e.target.checked);
             this.handleChange(e);
+            if (e.target.checked) {
+              AppContainer.moveListItemToEnd("todo", this.props.todo.id, false);
+            } else {
+              AppContainer.moveListItemToEnd("todo", this.props.todo.id, true);
+            }
           }}
           name="isDone"
-          className="inline"
+          className="inline size--is--2rem"
           type="checkbox"
           checked={this.state.isDone}
         />
-        {this.state.editable ? this.renderTodoEdit() : this.renderTodo()}
-        <button
-          id={`todo-entry-delete-${this.props.todo.id}`}
-          onClick={() => {
-            AppContainer.removeListItem("todo", this.props.todo.id);
-          }}
-        >
-          X
-        </button>
+        <div id="todo-button-container">
+          <div>
+
+            <button
+              id={`todo-entry-delete-${this.props.todo.id}`}
+              className="border"
+              onClick={() => {
+                if (window.confirm("Delete Todo Item?")) {
+                  AppContainer.removeListItem("todo", this.props.todo.id);
+                }
+              }}
+            >
+              &#215;
+            </button>
+            {!this.props.todo.itemData.isDone && (
+              <React.Fragment>
+                <button
+                  id={`todo-entry-up-${this.props.todo.id}`}
+                  className="border"
+                  onClick={() => {
+                    const index = AppContainer.getListItemIndex(
+                      "todo",
+                      this.props.todo.id
+                    );
+                    if (index === 0) {
+                      return;
+                    } else {
+                      AppContainer.tradeListItemPosition(
+                        "todo",
+                        this.props.todo.id,
+                        index - 1
+                      );
+                    }
+                  }}
+                >
+                  &#8593;
+                </button>
+                <button
+                  id={`todo-entry-down-${this.props.todo.id}`}
+                  className="border"
+                  onClick={() => {
+                    const index = AppContainer.getListItemIndex(
+                      "todo",
+                      this.props.todo.id
+                    );
+                    if (index === AppContainer.getList("todo").length - 1) {
+                      return;
+                    } else {
+                      AppContainer.tradeListItemPosition(
+                        "todo",
+                        this.props.todo.id,
+                        index + 1
+                      );
+                    }
+                  }}
+                >
+                  &#8595;
+                </button>
+                <button
+                  className="border"
+                  onClick={() => {
+                    this.setState({
+                      editable: true
+                    });
+                  }}
+                >
+                  Edit
+                </button>
+              </React.Fragment>
+            )}
+          </div>
+            {this.state.editable ? this.renderTodoEdit() : this.renderTodo()}
+        </div>
       </div>
     );
   }

@@ -42,11 +42,17 @@ class BookmarkList extends Component {
         <form onSubmit={this.addBookmark}>
           <input
             id="bookmark-input"
+            className="border"
             onChange={this.handleChange}
             type="url"
             placeholder="http://"
           />
-          <input type="button" value="Add" onClick={this.addBookmark} />
+          <input
+            className="border"
+            type="button"
+            value="Add"
+            onClick={this.addBookmark}
+          />
         </form>
         {boomarkItems.map(bookmarkItem => {
           return (

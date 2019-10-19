@@ -12,12 +12,20 @@
     "unstated-connect": "^0.0.3"
   },
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel index.html",
+    "test": "mocha --require @babel/register"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-transform-regenerator": "^7.4.5"
+    "@babel/plugin-transform-regenerator": "^7.4.5",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
+    "mocha": "^6.2.1"
   },
   "browserslist": [
     "last 1 Chrome versions"

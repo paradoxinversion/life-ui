@@ -10,9 +10,44 @@ class AppContainer extends Container {
   state = {
     scratchpadData: "",
     todo: [],
-    bookmarks: []
+    bookmarks: [],
+    settingsOpen: false,
+    user: {
+      name: null
+    }
   };
+  async setUserName(userName) {
+    const user = Object.assign({}, this.state.user);
+    user.name = userName;
+    await this.setState({
+      user
+    });
+    store.set("user", this.state.user);
+    return this.state.user;
+  }
 
+  async loadUser() {
+    const user = store.get("user");
+    await this.setState({ user });
+    return this.state.user;
+  }
+
+  getUser() {
+    return this.state.user;
+  }
+  /**
+   * Sets whether or not the settings menu is currently open.
+   * @param {*} isOpen
+   */
+  async setMenuStatus(isOpen) {
+    await this.setState({
+      settingsOpen: isOpen
+    });
+  }
+
+  getMenuStatus() {
+    return this.state.settingsOpen;
+  }
   /**
    * Sets a the named list with the supplied data.
    * Use this for for initialization of lists.
@@ -21,10 +56,14 @@ class AppContainer extends Container {
    * @returns {Array} the listData that was passed in
    */
   async setList(list, listData) {
-    await this.setState({
-      [list]: listData
-    });
-    return listData;
+    try {
+      await this.setState({
+        [list]: listData
+      });
+      return this.state[list];
+    } catch (e) {
+      throw e;
+    }
   }
 
   /**
@@ -43,11 +82,13 @@ class AppContainer extends Container {
    * @returns {Array} The modified list from state
    */
   async updateListData(list, updatedList) {
-    await this.setState({
-      [list]: updatedList
-    });
-    store.set(list, this.state[list]);
-    return this.state.list;
+    try {
+      await this.setList(list, updatedList);
+      store.set(list, this.state[list]);
+      return this.state[list];
+    } catch (e) {
+      throw e;
+    }
   }
 
   /**
@@ -56,14 +97,48 @@ class AppContainer extends Container {
    * @param {Object} itemData - The data pertinent to the item to add
    */
   async createListItem(list, itemData) {
-    // const newEntry = {
-    //   id: getUID(),
-    //   itemData
-    // };
-    const newEntry = new ListItem(getUID(), itemData);
-    const updatedList = this.state[list].concat(newEntry);
-    await this.updateListData(list, updatedList);
-    return this.state[list];
+    try {
+      const newEntry = new ListItem(getUID(), itemData);
+      const updatedList = this.state[list].concat(newEntry);
+      await this.updateListData(list, updatedList);
+      return this.state[list];
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  getListItemIndex(list, id) {
+    return this.state[list].findIndex(el => el.id === id);
+  }
+
+  /**
+   * Moves a specified list item from its index to the back
+   * @param {*} list
+   * @param {*} id
+   */
+  async moveListItemToEnd(list, id, toFront) {
+    const listClone = this.state[list].slice(0);
+    const itemIndex = listClone.findIndex(el => el.id === id);
+    const itemToMove = listClone[itemIndex];
+    listClone.splice(itemIndex, 1);
+    toFront ? listClone.unshift(itemToMove) : listClone.push(itemToMove);
+    this.updateListData(list, listClone);
+  }
+
+  async tradeListItemPosition(list, id, newPosition) {
+    if (newPosition < 0 || newPosition > this.state[list].length) {
+      console.log("New position was out of bounds");
+      return;
+    }
+    const listClone = this.state[list].splice(0);
+    const initiatingItemIndex = listClone.findIndex(el => el.id === id);
+    const initiatingItem = listClone[initiatingItemIndex];
+
+    const tradePartner = listClone[newPosition];
+
+    listClone[initiatingItemIndex] = tradePartner;
+    listClone[newPosition] = initiatingItem;
+    this.updateListData(list, listClone);
   }
 
   /**
@@ -73,6 +148,8 @@ class AppContainer extends Container {
    * @returns {Array} The modified list from state
    */
   async removeListItem(list, id) {
+    console.log("WAHt");
+    console.log(list, id);
     const updatedList = this.state[list].filter(el => el.id !== id);
     await this.setState({ [list]: updatedList });
     await this.updateListData(list, updatedList);
@@ -114,6 +191,14 @@ class AppContainer extends Container {
     store.set("scratchpad", this.state.scratchpadData);
     return this.state.scratchpadData;
   }
+
+  getStateData() {
+    const data =
+      "text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(this.state));
+    return data;
+  }
 }
 
-export default new AppContainer();
+// export default new AppContainer();
+export default AppContainer;

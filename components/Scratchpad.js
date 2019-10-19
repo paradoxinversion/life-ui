@@ -27,7 +27,7 @@ class Scratchpad extends Component {
         <h2>Scratchpad</h2>
         <textarea
           id="scratchpad"
-          className="border"
+          className="border text-area"
           value={this.state.scratchpadData}
           onBlur={() => {
             AppContainer.updateScratchpad(this.state.scratchpadData);

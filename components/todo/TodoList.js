@@ -42,9 +42,15 @@ class TodoList extends Component {
       <section id="section-todo-list">
         <h2>Todo</h2>
         <form onSubmit={this.addTodo}>
-          <input id="todo-input" onChange={this.handleChange} type="text" />
+          <input
+            id="todo-input"
+            className="border"
+            onChange={this.handleChange}
+            type="text"
+          />
           <input
             id="todo-submit"
+            className="border"
             type="button"
             value="Add"
             onClick={async e => await this.addTodo(e)}
