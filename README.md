@@ -12,6 +12,35 @@ Lists are Arrays of Objects who's objects follow pattern below:
   itemData: [Object]
 }
 ```
+`Bookmark`
+```
+[
+  {
+    "id":"1573870654351MI61ZsGL",
+    "itemData":"https://paradoxinversion.com"
+  }
+]
+```
+`Todo`
+
+```
+[
+  {
+    "id":"1571700012034wWDKRHrs",
+    "itemData":{
+      "text":"to the thing",
+      "isDone":false
+    }
+  },
+  {
+    "id":"1573870631336fgW9G4VW",
+    "itemData":{
+      "text":"do another thing",
+      "isDone":true
+    }
+  }
+]
+``
 
 The data structure of `itemData` changes depending on what type of items are in the list.
 

@@ -13,13 +13,6 @@ class TodoList extends Component {
       newTodoText: ""
     };
   }
-  componentDidMount() {
-    const todoListData = store.get("todo");
-    if (todoListData) {
-      const [AppContainer] = this.props.containers;
-      AppContainer.setList("todo", todoListData);
-    }
-  }
 
   handleChange = e => {
     this.setState({

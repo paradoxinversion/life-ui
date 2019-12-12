@@ -14,6 +14,13 @@ class AppContainer extends Container {
     settingsOpen: false,
     user: {
       name: null
+    },
+    panels: {
+      todo: {
+        type: "todo",
+        list: []
+      },
+      bookmarks: { type: "bookmarks", list: [] }
     }
   };
   async setUserName(userName) {
@@ -28,7 +35,9 @@ class AppContainer extends Container {
 
   async loadUser() {
     const user = store.get("user");
-    await this.setState({ user });
+    if (user) {
+      await this.setState({ user });
+    }
     return this.state.user;
   }
 
@@ -56,11 +65,14 @@ class AppContainer extends Container {
    * @returns {Array} the listData that was passed in
    */
   async setList(list, listData) {
+    const panels = Object.assign({}, this.state.panels);
+    if (!panels[list]) panels[list] = {};
+    panels[list].list = listData;
     try {
       await this.setState({
-        [list]: listData
+        panels
       });
-      return this.state[list];
+      return this.state.panels[list].list;
     } catch (e) {
       throw e;
     }
@@ -72,7 +84,7 @@ class AppContainer extends Container {
    * @returns {Array} - The list from the state
    */
   getList(list) {
-    return this.state[list];
+    return this.state.panels[list].list;
   }
 
   /**
@@ -84,8 +96,8 @@ class AppContainer extends Container {
   async updateListData(list, updatedList) {
     try {
       await this.setList(list, updatedList);
-      store.set(list, this.state[list]);
-      return this.state[list];
+      store.set(`lui-panel-data-${list}`, this.state.panels[list].list);
+      return this.state.panels[list].list;
     } catch (e) {
       throw e;
     }
@@ -99,16 +111,16 @@ class AppContainer extends Container {
   async createListItem(list, itemData) {
     try {
       const newEntry = new ListItem(getUID(), itemData);
-      const updatedList = this.state[list].concat(newEntry);
+      const updatedList = this.state.panels[list].list.concat(newEntry);
       await this.updateListData(list, updatedList);
-      return this.state[list];
+      return this.state.panels[list].list;
     } catch (e) {
       throw e;
     }
   }
 
   getListItemIndex(list, id) {
-    return this.state[list].findIndex(el => el.id === id);
+    return this.state.panels[list].list.findIndex(el => el.id === id);
   }
 
   /**
@@ -117,7 +129,7 @@ class AppContainer extends Container {
    * @param {*} id
    */
   async moveListItemToEnd(list, id, toFront) {
-    const listClone = this.state[list].slice(0);
+    const listClone = this.state.panels[list].list.slice(0);
     const itemIndex = listClone.findIndex(el => el.id === id);
     const itemToMove = listClone[itemIndex];
     listClone.splice(itemIndex, 1);
@@ -126,11 +138,11 @@ class AppContainer extends Container {
   }
 
   async tradeListItemPosition(list, id, newPosition) {
-    if (newPosition < 0 || newPosition > this.state[list].length) {
+    if (newPosition < 0 || newPosition > this.state.panels[list].list.length) {
       console.log("New position was out of bounds");
       return;
     }
-    const listClone = this.state[list].splice(0);
+    const listClone = this.state.panels[list].list.splice(0);
     const initiatingItemIndex = listClone.findIndex(el => el.id === id);
     const initiatingItem = listClone[initiatingItemIndex];
 
@@ -148,12 +160,13 @@ class AppContainer extends Container {
    * @returns {Array} The modified list from state
    */
   async removeListItem(list, id) {
-    console.log("WAHt");
-    console.log(list, id);
-    const updatedList = this.state[list].filter(el => el.id !== id);
-    await this.setState({ [list]: updatedList });
+    const panels = Object.assign({}, this.state.panels);
+    const updatedList = this.state.panels[list].list.filter(el => el.id !== id);
+    panels[list].list = updatedList;
+    console.log("check this if there are issues");
+    // await this.setState({ panels});
     await this.updateListData(list, updatedList);
-    return this.state[list];
+    return this.state.panels[list].list;
   }
 
   /**
@@ -164,7 +177,7 @@ class AppContainer extends Container {
    * @returns {Object} The newly modified List from state
    */
   async editListItem(list, id, itemData) {
-    const updatedList = this.state[list].map(listItem => {
+    const updatedList = this.state.panels[list].list.map(listItem => {
       if (listItem.id === id) {
         return {
           id: listItem.id,
@@ -173,10 +186,9 @@ class AppContainer extends Container {
       }
       return listItem;
     });
-
-    await this.setState({ [list]: updatedList });
-    store.set(list, this.state[list]);
-    return this.state[list];
+    await this.updateListData(list, updatedList);
+    store.set(`lui-panel-data-${list}`, this.state.panels[list].list);
+    return this.state.panel[list].list;
   }
 
   /**
@@ -188,7 +200,7 @@ class AppContainer extends Container {
     await this.setState({
       scratchpadData: updatedScratchpadData
     });
-    store.set("scratchpad", this.state.scratchpadData);
+    store.set("lui-panel-data-scratchpad", this.state.scratchpadData);
     return this.state.scratchpadData;
   }
 
@@ -197,6 +209,29 @@ class AppContainer extends Container {
       "text/json;charset=utf-8," +
       encodeURIComponent(JSON.stringify(this.state));
     return data;
+  }
+
+  getPanelsFromLocalStorage() {
+    let panelData = []
+    store.each(function(value, key) {
+      console.log(key, "==", value);
+      
+    });
+  }
+
+  // updatePanels()
+
+  addPanel(panelName, panelType){
+    const panel = {type: panelType, list: []}
+
+    const panels = Object.assign({}, this.state.panels)
+    panels[panelName] = panel
+
+    this.setState({
+      panels
+    })
+
+    return this.state.panels[panel]
   }
 }
 

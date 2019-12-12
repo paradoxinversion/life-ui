@@ -12,13 +12,6 @@ class BookmarkList extends Component {
       newBookmark: ""
     };
   }
-  componentDidMount() {
-    const bookmarkData = store.get("bookmarks");
-    if (bookmarkData) {
-      const [AppContainer] = this.props.containers;
-      AppContainer.setList("bookmarks", bookmarkData);
-    }
-  }
 
   handleChange = e => {
     this.setState({

@@ -16,10 +16,11 @@
     "test": "mocha --require @babel/register"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
+    "@babel/core": "^7.7.4",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-regenerator": "^7.4.5",
     "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.7.4",
     "@babel/register": "^7.6.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

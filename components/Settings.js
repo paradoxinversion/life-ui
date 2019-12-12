@@ -1,6 +1,7 @@
 import React from "react";
 import connect from "unstated-connect";
 import AppContainer from "../containers/AppContainer";
+import PanelsSettings from "./Panels";
 
 class Settings extends React.Component {
   constructor(props) {
@@ -54,6 +55,7 @@ class Settings extends React.Component {
             Save
           </button>
         </div>
+        <PanelsSettings />
         <a
           className="block"
           href={`data:${AppContainer.getStateData()}`}
