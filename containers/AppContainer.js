@@ -105,6 +105,7 @@ class AppContainer extends Container {
   async updatePanelList(panel, updatedList) {
     try {
       // get this panel
+      debugger;
       const panelData = this.state.panels[panel];
       // update its list w/ udpated version
       panelData.list = updatedList;
@@ -113,7 +114,7 @@ class AppContainer extends Container {
       // overwrite w/ updated panel
       await this.setState({ panels });
       this.storePanelData();
-      return this.state.panels[list].list;
+      return this.state.panels[panel].list;
     } catch (e) {
       throw e;
     }
@@ -152,7 +153,7 @@ class AppContainer extends Container {
     const itemToMove = listClone[itemIndex];
     listClone.splice(itemIndex, 1);
     toFront ? listClone.unshift(itemToMove) : listClone.push(itemToMove);
-    this.updateListData(list, listClone);
+    this.updatePanelList(list, listClone);
   }
 
   async tradeListItemPosition(list, id, newPosition) {
@@ -195,6 +196,7 @@ class AppContainer extends Container {
    * @returns {Object} The newly modified List from state
    */
   async editListItem(list, id, itemData) {
+    debugger;
     const updatedList = this.state.panels[list].list.map(listItem => {
       if (listItem.id === id) {
         return {
@@ -204,9 +206,9 @@ class AppContainer extends Container {
       }
       return listItem;
     });
-    await this.updateListData(list, updatedList);
-    store.set(`lui-panel-data-${list}`, this.state.panels[list].list);
-    return this.state.panel[list].list;
+    await this.updatePanelList(list, updatedList);
+    this.storePanelData();
+    return this.state.panels[list].list;
   }
 
   /**

@@ -21,7 +21,7 @@ class TodoEntry extends Component {
     const [AppContainer] = this.props.containers;
     const todo = this.state.todo;
     todo.itemData.isDone = isDone;
-    AppContainer.editListItem("todo", todo.id, todo.itemData);
+    AppContainer.editListItem(this.props.panel, todo.id, todo.itemData);
   }
 
   renderTodo() {
@@ -43,7 +43,7 @@ class TodoEntry extends Component {
         <button
           className="border"
           onClick={() => {
-            AppContainer.editListItem("todo", this.props.todo.id, {
+            AppContainer.editListItem(this.props.panel, this.props.todo.id, {
               ...this.props.todo.itemData,
               text: this.state.text,
               isDone: this.state.isDone
@@ -51,8 +51,7 @@ class TodoEntry extends Component {
             this.setState({
               editable: false
             });
-          }}
-        >
+          }}>
           Save
         </button>
         <input
@@ -74,9 +73,17 @@ class TodoEntry extends Component {
             this.setIsDone(e.target.checked);
             this.handleChange(e);
             if (e.target.checked) {
-              AppContainer.moveListItemToEnd("todo", this.props.todo.id, false);
+              AppContainer.moveListItemToEnd(
+                this.props.panel,
+                this.props.todo.id,
+                false
+              );
             } else {
-              AppContainer.moveListItemToEnd("todo", this.props.todo.id, true);
+              AppContainer.moveListItemToEnd(
+                this.props.panel,
+                this.props.todo.id,
+                true
+              );
             }
           }}
           name="isDone"
@@ -86,16 +93,17 @@ class TodoEntry extends Component {
         />
         <div id="todo-button-container">
           <div>
-
             <button
               id={`todo-entry-delete-${this.props.todo.id}`}
               className="border"
               onClick={() => {
                 if (window.confirm("Delete Todo Item?")) {
-                  AppContainer.removeListItem("todo", this.props.todo.id);
+                  AppContainer.removeListItem(
+                    this.props.panel,
+                    this.props.todo.id
+                  );
                 }
-              }}
-            >
+              }}>
               &#215;
             </button>
             {!this.props.todo.itemData.isDone && (
@@ -105,20 +113,19 @@ class TodoEntry extends Component {
                   className="border"
                   onClick={() => {
                     const index = AppContainer.getListItemIndex(
-                      "todo",
+                      this.props.panel,
                       this.props.todo.id
                     );
                     if (index === 0) {
                       return;
                     } else {
                       AppContainer.tradeListItemPosition(
-                        "todo",
+                        this.props.panel,
                         this.props.todo.id,
                         index - 1
                       );
                     }
-                  }}
-                >
+                  }}>
                   &#8593;
                 </button>
                 <button
@@ -126,20 +133,22 @@ class TodoEntry extends Component {
                   className="border"
                   onClick={() => {
                     const index = AppContainer.getListItemIndex(
-                      "todo",
+                      this.props.panel,
                       this.props.todo.id
                     );
-                    if (index === AppContainer.getList("todo").length - 1) {
+                    if (
+                      index ===
+                      AppContainer.getList(this.props.panel).length - 1
+                    ) {
                       return;
                     } else {
                       AppContainer.tradeListItemPosition(
-                        "todo",
+                        this.props.panel,
                         this.props.todo.id,
                         index + 1
                       );
                     }
-                  }}
-                >
+                  }}>
                   &#8595;
                 </button>
                 <button
@@ -148,14 +157,13 @@ class TodoEntry extends Component {
                     this.setState({
                       editable: true
                     });
-                  }}
-                >
+                  }}>
                   Edit
                 </button>
               </React.Fragment>
             )}
           </div>
-            {this.state.editable ? this.renderTodoEdit() : this.renderTodo()}
+          {this.state.editable ? this.renderTodoEdit() : this.renderTodo()}
         </div>
       </div>
     );

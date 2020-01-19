@@ -56,6 +56,7 @@ class TodoList extends Component {
               key={`td-${todoItem.id}`}
               entry={todoItem}
               todo={todoItem}
+              panel={this.props.id}
             />
           );
         })}
