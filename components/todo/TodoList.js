@@ -24,25 +24,26 @@ class TodoList extends Component {
     e.preventDefault();
     const [AppContainer] = this.props.containers;
     const todoItem = new ToDoData(this.state.newTodoText);
-    AppContainer.createListItem("todo", todoItem);
-    const todoInput = document.getElementById("todo-input");
+    AppContainer.createListItem(this.props.id, todoItem);
+    const todoInput = document.getElementById(`todo-input-${this.props.id}`);
     todoInput.value = "";
   };
+
   render() {
     const [AppContainer] = this.props.containers;
-    const todoItems = AppContainer.getList("todo");
+    const todoItems = AppContainer.getList(this.props.id);
     return (
       <section id="section-todo-list">
         <h2>Todo</h2>
         <form onSubmit={this.addTodo}>
           <input
-            id="todo-input"
+            id={`todo-input-${this.props.id}`}
             className="border"
             onChange={this.handleChange}
             type="text"
           />
           <input
-            id="todo-submit"
+            id={`todo-submit-${this.props.id}`}
             className="border"
             type="button"
             value="Add"

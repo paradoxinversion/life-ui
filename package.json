@@ -5,6 +5,7 @@
   "author": "Jedai Saboteur <paradoxinversion@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "parcel-bundler": "^1.12.4",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "store": "^2.0.12",

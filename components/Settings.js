@@ -29,10 +29,10 @@ class Settings extends React.Component {
         <h1>Settings</h1>
         <button
           className="border"
-          onClick={() => {
+          onClick={e => {
+            e.preventDefault();
             AppContainer.setMenuStatus(false);
-          }}
-        >
+          }}>
           Exit
         </button>
         <div>
@@ -50,8 +50,7 @@ class Settings extends React.Component {
             className="border"
             onClick={() => {
               AppContainer.setUserName(this.state["settings-user-input"]);
-            }}
-          >
+            }}>
             Save
           </button>
         </div>
@@ -59,8 +58,7 @@ class Settings extends React.Component {
         <a
           className="block"
           href={`data:${AppContainer.getStateData()}`}
-          download="lifeui.json"
-        >
+          download="lifeui.json">
           Download LifeUI Data
         </a>
       </div>

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import connect from "unstated-connect";
 import AppContainer from "../containers/AppContainer";
+
 class Bookmark extends Component {
   state = {
     editing: false,
@@ -22,8 +23,7 @@ class Bookmark extends Component {
             this.setState({
               editing: true
             });
-          }}
-        >
+          }}>
           Edit
         </button>
       </Fragment>
@@ -44,8 +44,7 @@ class Bookmark extends Component {
             this.setState({
               editing: false
             });
-          }}
-        >
+          }}>
           Save
         </button>
         <button
@@ -53,8 +52,7 @@ class Bookmark extends Component {
             this.setState({
               editing: false
             });
-          }}
-        >
+          }}>
           Cancel
         </button>
         <input
@@ -75,8 +73,7 @@ class Bookmark extends Component {
           className="border"
           onClick={() => {
             AppContainer.removeListItem("bookmarks", this.props.bookmark.id);
-          }}
-        >
+          }}>
           &#215;
         </button>
       </div>

@@ -7,6 +7,7 @@ import store from "store";
 import AppContainer from "./containers/AppContainer";
 import "./styles/style.css";
 import Settings from "./components/Settings";
+import Panel from "./components/Panel";
 class App extends Component {
   async componentDidMount() {
     const [AppContainer] = this.props.containers;
@@ -42,14 +43,18 @@ class App extends Component {
                 className="border"
                 onClick={() => {
                   AppContainer.setMenuStatus(true);
-                }}
-              >
+                }}>
                 Settings
               </button>
             </div>
             <Scratchpad />
-            <TodoList />
-            <BookmarkList />
+            {Object.keys(AppContainer.state.panels).map(objectKey => {
+              return (
+                <div>
+                  <Panel panel={AppContainer.state.panels[objectKey]} />
+                </div>
+              );
+            })}
           </React.Fragment>
         ) : (
           <Settings />

@@ -16,11 +16,12 @@ class AppContainer extends Container {
       name: null
     },
     panels: {
-      todo: {
-        type: "todo",
-        list: []
-      },
-      bookmarks: { type: "bookmarks", list: [] }
+      // todo: {
+      //   type: "todo",
+      //   list: [],
+      //   name: "Todo List"
+      // },
+      // bookmarks: { type: "bookmarks", list: [], name: "Boomark list" }
     }
   };
   async setUserName(userName) {
@@ -79,14 +80,13 @@ class AppContainer extends Container {
   }
 
   /**
-   * Return a list by name.
-   * @param {String} list - The list to return
+   * Return a list by panelId.
+   * @param {Int} list - The list to return
    * @returns {Array} - The list from the state
    */
-  getList(list) {
-    return this.state.panels[list].list;
+  getList(panelId) {
+    return this.state.panels[panelId].list;
   }
-
   /**
    * Updates a list with new data and stores it.
    * @param {String} list - The list to update
@@ -102,17 +102,35 @@ class AppContainer extends Container {
       throw e;
     }
   }
-
+  async updatePanelList(panel, updatedList) {
+    try {
+      // get this panel
+      const panelData = this.state.panels[panel];
+      // update its list w/ udpated version
+      panelData.list = updatedList;
+      // copy panels state to new obbj
+      const panels = { ...this.state.panels, [panel]: panelData };
+      // overwrite w/ updated panel
+      await this.setState({ panels });
+      this.storePanelData();
+      return this.state.panels[list].list;
+    } catch (e) {
+      throw e;
+    }
+  }
   /**
-   * Adds a single list item and updates the listt
+   * Adds a single list item to a panel and saves the panel data
    * @param {String} list - The list to add to
    * @param {Object} itemData - The data pertinent to the item to add
    */
   async createListItem(list, itemData) {
     try {
+      debugger;
       const newEntry = new ListItem(getUID(), itemData);
       const updatedList = this.state.panels[list].list.concat(newEntry);
-      await this.updateListData(list, updatedList);
+      // await this.updateListData(list, updatedList);
+      await this.updatePanelList(list, updatedList);
+      this.storePanelData();
       return this.state.panels[list].list;
     } catch (e) {
       throw e;
@@ -212,26 +230,36 @@ class AppContainer extends Container {
   }
 
   getPanelsFromLocalStorage() {
-    let panelData = []
+    let panelData = {};
     store.each(function(value, key) {
-      console.log(key, "==", value);
-      
+      // console.log(key, "==", value);
+      console.log(typeof value);
+      try {
+        if (typeof value == "string") panelData = JSON.parse(value);
+      } catch (e) {
+        console.log(e);
+      }
     });
+    console.log(panelData);
+    this.setState({ panels: panelData });
+    return panelData;
   }
 
-  // updatePanels()
+  async addPanel(panelName, panelType) {
+    const panel = { id: getUID(), type: panelType, list: [], name: panelName };
 
-  addPanel(panelName, panelType){
-    const panel = {type: panelType, list: []}
+    const panels = Object.assign({}, this.state.panels);
+    panels[panel.id] = panel;
 
-    const panels = Object.assign({}, this.state.panels)
-    panels[panelName] = panel
-
-    this.setState({
+    await this.setState({
       panels
-    })
+    });
+    this.storePanelData();
+    return this.state.panels[panel];
+  }
 
-    return this.state.panels[panel]
+  storePanelData() {
+    store.set(`lui-panel-data`, JSON.stringify(this.state.panels));
   }
 }
 
