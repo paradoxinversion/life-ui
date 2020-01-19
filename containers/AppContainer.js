@@ -169,7 +169,7 @@ class AppContainer extends Container {
 
     listClone[initiatingItemIndex] = tradePartner;
     listClone[newPosition] = initiatingItem;
-    this.updateListData(list, listClone);
+    this.updatePanelList(list, listClone);
   }
 
   /**
@@ -184,7 +184,7 @@ class AppContainer extends Container {
     panels[list].list = updatedList;
     console.log("check this if there are issues");
     // await this.setState({ panels});
-    await this.updateListData(list, updatedList);
+    await this.updatePanelList(list, updatedList);
     return this.state.panels[list].list;
   }
 
