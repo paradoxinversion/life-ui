@@ -72,7 +72,10 @@ class Bookmark extends Component {
         <button
           className="border"
           onClick={() => {
-            AppContainer.removeListItem("bookmarks", this.props.bookmark.id);
+            AppContainer.removeListItem(
+              this.props.panel,
+              this.props.bookmark.id
+            );
           }}>
           &#215;
         </button>

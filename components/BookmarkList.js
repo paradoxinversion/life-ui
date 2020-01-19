@@ -22,19 +22,21 @@ class BookmarkList extends Component {
   addBookmark = e => {
     e.preventDefault();
     const [AppContainer] = this.props.containers;
-    AppContainer.createListItem("bookmarks", this.state.newBookmark);
-    const bookmarkInput = document.getElementById("bookmark-input");
+    AppContainer.createListItem(this.props.id, this.state.newBookmark);
+    const bookmarkInput = document.getElementById(
+      `bookmark-input-${this.props.id}`
+    );
     bookmarkInput.value = "";
   };
   render() {
     const [AppContainer] = this.props.containers;
-    const boomarkItems = AppContainer.getList("bookmarks");
+    const boomarkItems = AppContainer.getList(this.props.id);
     return (
       <section id="section-bookmarks">
         <h2>Bookmarks</h2>
         <form onSubmit={this.addBookmark}>
           <input
-            id="bookmark-input"
+            id={`bookmark-input-${this.props.id}`}
             className="border"
             onChange={this.handleChange}
             type="url"
@@ -49,7 +51,11 @@ class BookmarkList extends Component {
         </form>
         {boomarkItems.map(bookmarkItem => {
           return (
-            <Bookmark key={`td-${bookmarkItem.id}`} bookmark={bookmarkItem} />
+            <Bookmark
+              panel={this.props.id}
+              key={`td-${bookmarkItem.id}`}
+              bookmark={bookmarkItem}
+            />
           );
         })}
       </section>
