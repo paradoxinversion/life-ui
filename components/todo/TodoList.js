@@ -34,7 +34,7 @@ class TodoList extends Component {
     const todoItems = AppContainer.getList(this.props.id);
     return (
       <section id="section-todo-list">
-        <h2>Todo</h2>
+        <h2>{this.props.name}</h2>
         <form onSubmit={this.addTodo}>
           <input
             id={`todo-input-${this.props.id}`}

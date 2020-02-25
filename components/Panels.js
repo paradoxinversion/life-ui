@@ -9,6 +9,21 @@ function PanelsSettings(props) {
     <div>
       <h2>Panels</h2>
       {/* Add panels with this form */}
+      {Object.keys(AppContainer.state.panels).map(panel => {
+        return (
+          <div>
+            <p>{AppContainer.state.panels[panel].name}</p>
+            <p>{AppContainer.state.panels[panel].type}</p>
+            <p>{AppContainer.state.panels[panel].id}</p>
+            <button
+              onClick={() =>
+                AppContainer.removePanel(AppContainer.state.panels[panel].id)
+              }>
+              Delete
+            </button>
+          </div>
+        );
+      })}
       <form>
         <label htmlFor="panelName">Panel Name</label>
         <input
@@ -33,6 +48,7 @@ function PanelsSettings(props) {
               panelType: e.target.value
             });
           }}>
+          <option value="">Select a panel type</option>
           <option value="scratchpad">Scratchpad</option>
           <option value="todo-list">Todo List</option>
           <option value="bookmarks-list">Bookmark List</option>

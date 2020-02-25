@@ -1,5 +1,5 @@
 import React from "react";
-import BookmarkList from "./BookmarkList";
+import BookmarkList from "./bookmark/BookmarkList";
 import TodoList from "./todo/TodoList";
 import Scratchpad from "./Scratchpad";
 
@@ -10,12 +10,11 @@ const panelTypes = {
 };
 
 function Panel(props) {
-  console.log(props.panel);
   const PanelComponent = panelTypes[props.panel.type];
   return (
     <div>
-      <p>testo</p>
-      <PanelComponent id={props.panel.id} />
+      <p>{props.panel.name}</p>
+      <PanelComponent id={props.panel.id} name={props.panel.name} />
     </div>
   );
 }

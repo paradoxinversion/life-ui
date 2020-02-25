@@ -119,6 +119,23 @@ class AppContainer extends Container {
       throw e;
     }
   }
+  async updatePanelContent(panel, updatedContent) {
+    try {
+      // get this panel
+      debugger;
+      const panelData = this.state.panels[panel];
+      // update its list w/ udpated version
+      panelData.content = updatedContent;
+      // copy panels state to new obbj
+      const panels = { ...this.state.panels, [panel]: panelData };
+      // overwrite w/ updated panel
+      await this.setState({ panels });
+      this.storePanelData();
+      return this.state.panels[panel].list;
+    } catch (e) {
+      throw e;
+    }
+  }
   /**
    * Adds a single list item to a panel and saves the panel data
    * @param {String} list - The list to add to
@@ -216,11 +233,10 @@ class AppContainer extends Container {
    * @param {String} updatedScratchpadData - New/updated scratchpad data
    * @returns {String} The scratchpad data (string)
    */
-  async updateScratchpad(updatedScratchpadData) {
-    await this.setState({
-      scratchpadData: updatedScratchpadData
-    });
-    store.set("lui-panel-data-scratchpad", this.state.scratchpadData);
+  async updateScratchpad(panelId, updatedScratchpadData) {
+    // const panel = this.state.panels[panelId];
+    this.updatePanelContent(panelId, updatedScratchpadData);
+    this.storePanelData();
     return this.state.scratchpadData;
   }
 
@@ -248,8 +264,12 @@ class AppContainer extends Container {
   }
 
   async addPanel(panelName, panelType) {
-    const panel = { id: getUID(), type: panelType, list: [], name: panelName };
-
+    let panel;
+    if (panelType !== "scratchpad") {
+      panel = { id: getUID(), type: panelType, list: [], name: panelName };
+    } else {
+      panel = { id: getUID(), type: panelType, content: "", name: panelName };
+    }
     const panels = Object.assign({}, this.state.panels);
     panels[panel.id] = panel;
 
@@ -262,6 +282,15 @@ class AppContainer extends Container {
 
   storePanelData() {
     store.set(`lui-panel-data`, JSON.stringify(this.state.panels));
+  }
+
+  async removePanel(panelId) {
+    const panels = Object.assign({}, this.state.panels);
+    delete panels[panelId];
+    await this.setState({
+      panels
+    });
+    this.storePanelData();
   }
 }
 

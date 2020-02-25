@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import connect from "unstated-connect";
 import store from "store";
-import AppContainer from "../containers/AppContainer";
+import AppContainer from "../../containers/AppContainer";
 import Bookmark from "./Bookmark";
 
 class BookmarkList extends Component {
@@ -33,7 +33,7 @@ class BookmarkList extends Component {
     const boomarkItems = AppContainer.getList(this.props.id);
     return (
       <section id="section-bookmarks">
-        <h2>Bookmarks</h2>
+        <h2>{this.props.name}</h2>
         <form onSubmit={this.addBookmark}>
           <input
             id={`bookmark-input-${this.props.id}`}

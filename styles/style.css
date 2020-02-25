@@ -1,8 +1,14 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   box-sizing: border-box;
 }
-.inline {
+/* .inline {
   display: inline;
 }
 .block {
@@ -27,4 +33,4 @@ body {
 .size--is--2rem {
   height: 2rem;
   width: 2rem;
-}
+} */

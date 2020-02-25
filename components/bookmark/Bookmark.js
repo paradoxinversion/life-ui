@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import connect from "unstated-connect";
-import AppContainer from "../containers/AppContainer";
+import AppContainer from "../../containers/AppContainer";
 
 class Bookmark extends Component {
   state = {

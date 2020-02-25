@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import connect from "unstated-connect";
-import store from "store";
 import AppContainer from "../containers/AppContainer";
 class Scratchpad extends Component {
   constructor(props) {
@@ -10,7 +9,8 @@ class Scratchpad extends Component {
     };
   }
   componentDidMount() {
-    const scratchpadData = store.get("scratchpad");
+    const [AppContainer] = this.props.containers;
+    const scratchpadData = AppContainer.state.panels[this.props.id].content;
     if (scratchpadData) {
       this.setState({ scratchpadData });
     }
@@ -24,16 +24,17 @@ class Scratchpad extends Component {
     const [AppContainer] = this.props.containers;
     return (
       <section id="section-scratchpad">
-        <h2>Scratchpad</h2>
         <textarea
           id="scratchpad"
           className="border text-area"
           value={this.state.scratchpadData}
           onBlur={() => {
-            AppContainer.updateScratchpad(this.state.scratchpadData);
+            AppContainer.updateScratchpad(
+              this.props.id,
+              this.state.scratchpadData
+            );
           }}
-          onChange={this.handleChange}
-        ></textarea>
+          onChange={this.handleChange}></textarea>
       </section>
     );
   }
